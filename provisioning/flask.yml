@@ -1,0 +1,31 @@
+- hosts: all
+  user: vagrant
+  gather_facts: yes
+  become: yes
+  vars:
+    webapp_dir: /home/vagrant/assignment
+    virtualenv_dir: /home/vagrant/venv
+    app_name: flask
+  tasks:
+    - include: mongodb.yml
+    - name: install apt packages
+      apt: "name={{ item }} state=present"
+      with_items:
+        - python-pip
+        - python-dev
+        - python-virtualenv
+        - supervisor
+      notify:
+        - start supervisor
+    - name: create python virtual environment
+      file: path="{{ virtualenv_dir }}" state=directory mode=0755
+    - name: install python dependencies
+      pip: requirements="{{ webapp_dir }}"/requirements.txt virtualenv="{{ virtualenv_dir }}"
+    - name: create supervisor config
+      template: src=templates/supervisor_flask.conf dest=/etc/supervisor/conf.d/{{ app_name }}.conf
+    - name: add app to supervisor
+      action: supervisorctl name={{ app_name }} state=present
+
+  handlers:
+    - name: start supervisor
+      service: name=supervisor state=started enabled=yes
