@@ -40,3 +40,39 @@ $ source .virtualenv/bin/activate
 ```
 (.virtualenv) $ nosetests
 ```
+
+# API Docs
+
+```
+# Create entry in user table
+POST /users
+-d [
+  {
+    "uid": "1",
+    "name": "John Doe",
+    "date": "2015-05-12T14:36:00.451765",
+    "md5checksum": "e8c83e232b64ce94fdd0e4539ad0d44f"
+  },
+  {
+    "uid": "2",
+    "name": "Jane Doe",
+    "date": "2015-05-13T14:36:00.451765",
+    "md5checksum": "b419795d50db2a35e94c8364978d898f"
+  }
+]
+
+# response
+{
+    "results": [
+        {"saved": 1},
+        {"saved": 0}
+    ]
+}
+
+# Count the number of entries in user table through filters: uid
+GET /users/search?uid=<uid>
+
+# response
+{"count": 1}
+
+```
