@@ -40,3 +40,7 @@ def create_app(config={'MONGODB_SETTINGS': {'DB': "assignment"}}):
     app.register_blueprint(api)
     db.init_app(app)
     return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(host='0.0.0.0', port=8080, debug=True)
